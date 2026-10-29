@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="images/logo.png" type="image/x-icon">
+<title>Meu Bairro — Protótipo demonstrativo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div id="loader" class="loader" role="status" aria-live="polite" aria-label="Carregando o Meu Bairro">
+  <div class="loader-center">
+    <span class="logo-mark"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg></span>
+    <p class="loader-brand">Meu Bairro</p>
+    <div class="loader-bar"><span></span></div>
+    <p class="loader-msg" id="loader-msg">Carregando protótipo…</p>
+    <button class="btn btn-primary" id="loader-retry" type="button" hidden style="margin-top:14px">Tentar novamente</button>
+  </div>
+</div>
+<script>
+(function () {
+  var el = document.getElementById('loader');
+  var msg = document.getElementById('loader-msg');
+  var retry = document.getElementById('loader-retry');
+  var MIN = 1800, t0 = Date.now();
+  var removido = false;
+  document.body.classList.add('loading');
+
+  window.atualizarLoader = function (texto, erro) {
+    msg.textContent = texto;
+    retry.hidden = !erro;
+    el.classList.toggle('error', Boolean(erro));
+  };
+
+  function remover() {
+    if (removido) return;
+    removido = true;
+    el.classList.add('done');
+    document.body.classList.remove('loading');
+    setTimeout(function () { if (el.parentNode) el.parentNode.removeChild(el); }, 700);
+  }
+
+  window.esconderLoader = function () {
+    var resta = Math.max(0, MIN - (Date.now() - t0));
+    return new Promise(function (ok) {
+      setTimeout(function () { remover(); ok(); }, resta);
+    });
+  };
+})();
+</script>
+
+<div class="demo-bar" role="note">
+  <span class="demo-bar-tag">Protótipo demonstrativo</span>
+  <span class="demo-bar-text">Conta de teste: <b>demo@meubairro.example</b> · senha <b>Demo@123</b></span>
+  <button type="button" class="demo-bar-btn" onclick="MeuBairroDemo.restaurar()">Restaurar dados</button>
+</div>
+
+<header id="header"></header>
+
+<main id="app" class="container" style="padding-bottom:40px"></main>
+
+<footer class="site-footer">
+  <div class="footer-inner container">
+    <div class="footer-brand">
+      <a class="logo" href="#/"><span class="logo-mark"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg></span><span>Meu Bairro</span></a>
+      <p>Uma comunidade mais atenta começa com informação compartilhada.</p>
+    </div>
+    <div class="footer-links"><strong>Navegação</strong><a href="#/">Início</a><a href="#/ocorrencias">Ocorrências</a></div>
+    <div class="footer-links"><strong>Participe</strong><a href="#/registrar">Registrar ocorrência</a><a href="#/login">Entrar na conta</a></div>
+  </div>
+  <div class="footer-bottom"><div class="footer-bottom-inner">Protótipo demonstrativo para fins acadêmicos.</div></div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<div class="modal-overlay" id="modal">
+  <div class="modal-card">
+    <h3>Tem certeza?</h3>
+    <p id="modal-text"></p>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeConfirm()">Cancelar</button>
+      <button class="btn btn-danger" onclick="modalYes()">Excluir</button>
+    </div>
+  </div>
+</div>
+<script src="demo-api.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
